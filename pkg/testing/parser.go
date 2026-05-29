@@ -132,7 +132,7 @@ func (r *Request) Render(ctx interface{}, dataDir string) (err error) {
 	// template the API
 	var result string
 	if result, err = render.Render("api", r.API, ctx); err == nil {
-		r.API = result
+		r.API = strings.TrimSpace(result)
 	} else {
 		err = fmt.Errorf("failed render '%s', %v", r.API, err)
 		return
@@ -141,14 +141,14 @@ func (r *Request) Render(ctx interface{}, dataDir string) (err error) {
 	// read body from file
 	if r.BodyFromFile != "" {
 		var data []byte
-		if data, err = os.ReadFile(path.Join(r.BodyFromFile, dataDir)); err != nil {
+		if data, err = os.ReadFile(path.Join(dataDir, r.BodyFromFile)); err != nil {
 			return
 		}
 		r.Body = NewRequestBody(strings.TrimSpace(string(data)))
 	}
 
 	// template the header
-	if r.Header, err = renderMap(ctx, r.Form, "header"); err != nil {
+	if r.Header, err = renderMap(ctx, r.Header, "header"); err != nil {
 		return
 	}
 
@@ -165,7 +165,7 @@ func (r *Request) Render(ctx interface{}, dataDir string) (err error) {
 	}
 
 	// setting default values
-	r.Method = util.EmptyThenDefault(http.MethodGet, r.Method)
+	r.Method = util.EmptyThenDefault(r.Method, http.MethodGet)
 	return
 }
 
