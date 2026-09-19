@@ -61,16 +61,16 @@ func (o *funcPrinterOption) runE(cmd *cobra.Command, args []string) (err error) 
 			return
 		}
 
-		if err = errors.Join(err, tpl.Validate()); err != nil {
+		if err = errors.Join(err, tpl.Validate(), tpl.ConflictWith(render.FuncMap())); err != nil {
 			return
 		}
 	}
 
-	if len(args) > 1 {
+	if len(args) > 0 {
 		name := args[0]
 		filterAndPrint(cmd, name)
 	} else if o.feature != "" {
-		ctx := context.WithValue(cmd.Context(), render.ContextBufferKey, cmd.ErrOrStderr())
+		ctx := context.WithValue(cmd.Context(), render.ContextBufferKey, cmd.OutOrStdout())
 
 		suite := godog.TestSuite{
 			ScenarioInitializer: initializeScenario,
@@ -88,7 +88,7 @@ func (o *funcPrinterOption) runE(cmd *cobra.Command, args []string) (err error) 
 			},
 		}
 
-		if suite.Run() == 0 {
+		if suite.Run() != 0 {
 			err = fmt.Errorf("failed to query the feature")
 		} else {
 			cmd.Println()
