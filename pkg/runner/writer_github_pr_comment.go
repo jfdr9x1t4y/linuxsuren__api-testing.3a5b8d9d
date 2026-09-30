@@ -140,9 +140,9 @@ func (w *githubPRCommentWriter) createOrUpdate(content string, id int) (err erro
 	var requestMethod string
 	var expectedCode int
 
-	if id >= 0 {
-		requestMethod = http.MethodPut
-		expectedCode = http.StatusCreated
+	if id > 0 {
+		requestMethod = http.MethodPatch
+		expectedCode = http.StatusOK
 		api = fmt.Sprintf("https://api.github.com/repos/%s/issues/comments/%d", w.Repo, id)
 	} else {
 		requestMethod = http.MethodPost
